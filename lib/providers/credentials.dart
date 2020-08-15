@@ -51,4 +51,24 @@ class Credentials with ChangeNotifier {
   bool visible() {
     return _credVisible;
   }
+
+  void rearrange(oldIndex, newIndex) {
+    Credential tmp = _items[oldIndex];
+    _items.removeAt(oldIndex);
+    _items.insert(newIndex, tmp);
+
+    if (newIndex > oldIndex) {
+      for (var i = newIndex; i >= 0; --i) {
+        _items[i].priority = i;
+      }
+    } else if (newIndex < oldIndex) {
+      for (var i = newIndex; i < _items.length; ++i) {
+        _items[i].priority = i;
+      }
+    }
+
+    _items.forEach(
+        (itm) async => await DatabseProvider.db.updateCredential(itm.id, itm));
+    notifyListeners();
+  }
 }

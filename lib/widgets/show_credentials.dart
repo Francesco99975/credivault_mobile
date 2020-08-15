@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:credivault_mobile/screens/credentials_database_screen.dart';
+import 'package:credivault_mobile/screens/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -16,20 +18,15 @@ class ShowCredentials extends StatefulWidget {
 
 class _ShowCredentialsState extends State<ShowCredentials> {
   static const _url = "https://bme-encdec-server.herokuapp.com";
-  var _isLoading = false;
   Map<String, dynamic> _decryptedCredentials;
 
   Future<void> _decryptCredentials() async {
-    setState(() {
-      _isLoading = !_isLoading;
-    });
+    Navigator.pushNamed(context, LoadingScreen.ROUTE_NAME);
     final res = await http.post("$_url/decrypt",
         body: json.encode(widget._credential.credentialData),
         headers: {HttpHeaders.contentTypeHeader: "application/json"});
     _decryptedCredentials = json.decode(res.body) as Map<String, dynamic>;
-    setState(() {
-      _isLoading = !_isLoading;
-    });
+    Navigator.pushNamed(context, CredentialsDatabaseScreen.ROUTE_NAME);
   }
 
   @override

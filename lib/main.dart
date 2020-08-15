@@ -1,3 +1,4 @@
+import 'package:credivault_mobile/screens/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:credivault_mobile/providers/credentials.dart';
@@ -24,7 +25,8 @@ class CredivaultApp extends StatelessWidget {
         routes: {
           CredentialsDatabaseScreen.ROUTE_NAME: (_) =>
               CredentialsDatabaseScreen(),
-          AddCredentialScreen.ROUTE_NAME: (_) => AddCredentialScreen()
+          AddCredentialScreen.ROUTE_NAME: (_) => AddCredentialScreen(),
+          LoadingScreen.ROUTE_NAME: (_) => LoadingScreen()
         },
       ),
     );
