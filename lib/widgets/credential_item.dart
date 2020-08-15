@@ -1,26 +1,20 @@
 import 'package:credivault_mobile/providers/credential.dart';
 import 'package:credivault_mobile/providers/credentials.dart';
 import 'package:credivault_mobile/screens/add_credential_screen.dart';
+import 'package:credivault_mobile/widgets/show_credentials.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CredentialItem extends StatelessWidget {
+  final Function _showSnackBar;
+
+  CredentialItem(this._showSnackBar);
+
   @override
   Widget build(BuildContext context) {
     final credential = Provider.of<Credential>(context);
     return Dismissible(
       key: ValueKey(credential.id),
-      // background: Container(
-      //   padding: const EdgeInsets.only(left: 20),
-      //   margin: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 4.0),
-      //   color: Colors.blue,
-      //   child: Icon(
-      //     Icons.edit,
-      //     color: Colors.white,
-      //     size: 40,
-      //   ),
-      //   alignment: Alignment.centerLeft,
-      // ),
       background: Container(
         padding: const EdgeInsets.only(right: 20),
         margin: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 4.0),
@@ -84,11 +78,7 @@ class CredentialItem extends StatelessWidget {
                         .pushNamed(AddCredentialScreen.ROUTE_NAME,
                             arguments: {'editMode': true, 'id': credential.id}),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.remove_red_eye),
-                    color: Theme.of(context).accentColor,
-                    onPressed: () {},
-                  ),
+                  ShowCredentials(credential, _showSnackBar),
                 ],
               ),
             )),

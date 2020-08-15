@@ -5,11 +5,35 @@ import 'package:credivault_mobile/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CredentialsDatabaseScreen extends StatelessWidget {
+class CredentialsDatabaseScreen extends StatefulWidget {
   static const ROUTE_NAME = '/credentials-database';
+
+  @override
+  _CredentialsDatabaseScreenState createState() =>
+      _CredentialsDatabaseScreenState();
+}
+
+class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _showSnackBar() {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          "Copied to Clipboard!",
+          style: TextStyle(color: Colors.white),
+        ),
+        duration: Duration(seconds: 1),
+        onVisible: () {
+          Future.delayed(Duration(seconds: 1))
+              .then((value) => _scaffoldKey.currentState.hideCurrentSnackBar());
+        },
+        backgroundColor: Colors.black));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: const Text("Your Credentials"),
         actions: <Widget>[
@@ -20,7 +44,7 @@ class CredentialsDatabaseScreen extends StatelessWidget {
                 arguments: {'editMode': false}),
           ),
           IconButton(
-            icon: Icon(Icons.vpn_key),
+            icon: const Icon(Icons.vpn_key),
             onPressed: () {},
           ),
         ],
@@ -50,7 +74,7 @@ class CredentialsDatabaseScreen extends StatelessWidget {
                                       itemBuilder: (_, index) =>
                                           ChangeNotifierProvider.value(
                                         value: credentials.items[index],
-                                        child: CredentialItem(),
+                                        child: CredentialItem(_showSnackBar),
                                       ),
                                     ),
                         )),
