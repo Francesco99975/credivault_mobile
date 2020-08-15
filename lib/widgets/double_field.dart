@@ -1,5 +1,7 @@
+import 'package:credivault_mobile/providers/credentials.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
 
 class DoubleField extends StatelessWidget {
   final int index;
@@ -41,6 +43,7 @@ class DoubleField extends StatelessWidget {
           width: deviceSize.width / 2 - 70,
           child: TextFormField(
             controller: valueControllers[index],
+            obscureText: Provider.of<Credentials>(context).visible(),
             decoration: InputDecoration(labelText: "value"),
             autocorrect: false,
             validator: (value) =>

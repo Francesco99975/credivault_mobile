@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 
 class AddCredentialScreen extends StatelessWidget {
   static const ROUTE_NAME = '/add-credential';
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -21,11 +22,13 @@ class AddCredentialScreen extends StatelessWidget {
           title: Text("Add a new credential"),
           centerTitle: true,
           actions: <Widget>[
-            if (args['editMode'])
-              IconButton(
-                icon: Icon(Icons.visibility),
-                onPressed: () {},
-              )
+            IconButton(
+              icon: Icon(Provider.of<Credentials>(context).visible()
+                  ? Icons.visibility
+                  : Icons.visibility_off),
+              onPressed: () => Provider.of<Credentials>(context, listen: false)
+                  .toggleVisible(),
+            )
           ],
         ),
         body: Stack(
@@ -67,6 +70,7 @@ class _AddCredentialFormState extends State<AddCredentialForm> {
   var _isLoading = false;
   Size deviceSize;
   final _uuid = Uuid();
+  Future<void> _data;
 
   Credential crd; //Update only
   final _ownerController = TextEditingController();
@@ -119,29 +123,35 @@ class _AddCredentialFormState extends State<AddCredentialForm> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero).then((_) {
+  Future<void> _loadData() async {
+    return Future(() async {
       deviceSize = MediaQuery.of(context).size;
       if (widget.args['editMode']) {
         crd = Provider.of<Credentials>(context, listen: false)
             .findById(widget.args['id']);
-        setState(() {
-          _ownerController.text = crd.owner;
-          _serviceController.text = crd.service;
-          crd.credentialData.forEach((key, value) {
-            _credentialInputs.add(_getCredentialInput(_credentialInputs.length,
-                key: key, value: value));
-          });
-          _refreshInputs();
+        _ownerController.text = crd.owner;
+        _serviceController.text = crd.service;
+        final res = await http.post("$_url/decrypt",
+            body: json.encode(crd.credentialData),
+            headers: {HttpHeaders.contentTypeHeader: "application/json"});
+        final decryptedCredentialData =
+            json.decode(res.body) as Map<String, dynamic>;
+        decryptedCredentialData.forEach((key, value) {
+          _credentialInputs.add(_getCredentialInput(_credentialInputs.length,
+              key: key, value: value));
         });
+        _refreshInputs();
+        print("Done");
       } else {
-        setState(() {
-          _credentialInputs.add(_getCredentialInput(0));
-        });
+        _credentialInputs.add(_getCredentialInput(0));
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _data = _loadData();
   }
 
   Future<void> _saveForm() async {
@@ -188,95 +198,113 @@ class _AddCredentialFormState extends State<AddCredentialForm> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          Card(
-            color: Theme.of(context).primaryColor,
-            elevation: 6.0,
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Form(
-                key: _formKey,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      TextFormField(
-                        autocorrect: false,
-                        controller: _ownerController,
-                        decoration:
-                            InputDecoration(labelText: "Credential Owner"),
-                        validator: (value) => value.trim().isEmpty
-                            ? "Enter a owner please"
-                            : null,
-                        onSaved: (newValue) => _owner = newValue,
-                      ),
-                      const SizedBox(
-                        height: 10.0,
-                      ),
-                      TextFormField(
-                        autocorrect: false,
-                        controller: _serviceController,
-                        decoration: InputDecoration(labelText: "Service"),
-                        validator: (value) => value.trim().isEmpty
-                            ? "Enter a service please"
-                            : null,
-                        onSaved: (newValue) => _service = newValue,
-                      ),
-                      const SizedBox(
-                        height: 10.0,
-                      ),
-                      Container(
-                        height: 250,
-                        child: ListView.builder(
-                            itemCount: _credentialInputs.length,
-                            itemBuilder: (context, index) =>
-                                _credentialInputs[index]),
-                      ),
-                      if (!_isLoading)
-                        Center(
-                          child: IconButton(
-                            icon: Icon(Icons.add),
-                            onPressed: () {
-                              setState(() {
-                                _credentialInputs.add(_getCredentialInput(
-                                    _credentialInputs.length));
-                                for (var i = _credentialInputs.length - 2;
-                                    i >= 0;
-                                    --i) {
-                                  _credentialInputs[i] = DoubleField(
-                                    index: i,
-                                    isOne: _credentialInputs.length + 1 < 2,
-                                    keyControllers: _keyControllers,
-                                    valueControllers: _valueControllers,
-                                    deviceSize: deviceSize,
-                                    fn: _setInputs,
-                                  );
-                                }
-                              });
-                            },
+    return FutureBuilder(
+      initialData: false,
+      future: _data,
+      builder: (context, snapshot) => snapshot.connectionState ==
+              ConnectionState.waiting
+          ? Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.amber,
+              ),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Card(
+                    color: Theme.of(context).primaryColor,
+                    elevation: 6.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Form(
+                        key: _formKey,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                autocorrect: false,
+                                controller: _ownerController,
+                                decoration: InputDecoration(
+                                    labelText: "Credential Owner"),
+                                validator: (value) => value.trim().isEmpty
+                                    ? "Enter a owner please"
+                                    : null,
+                                onSaved: (newValue) => _owner = newValue,
+                              ),
+                              const SizedBox(
+                                height: 10.0,
+                              ),
+                              TextFormField(
+                                autocorrect: false,
+                                controller: _serviceController,
+                                decoration:
+                                    InputDecoration(labelText: "Service"),
+                                validator: (value) => value.trim().isEmpty
+                                    ? "Enter a service please"
+                                    : null,
+                                onSaved: (newValue) => _service = newValue,
+                              ),
+                              const SizedBox(
+                                height: 10.0,
+                              ),
+                              Container(
+                                height: 250,
+                                child: ListView.builder(
+                                    itemCount: _credentialInputs.length,
+                                    itemBuilder: (context, index) =>
+                                        _credentialInputs[index]),
+                              ),
+                              if (!_isLoading)
+                                Center(
+                                  child: IconButton(
+                                    icon: Icon(Icons.add),
+                                    onPressed: () {
+                                      setState(() {
+                                        _credentialInputs.add(
+                                            _getCredentialInput(
+                                                _credentialInputs.length));
+                                        for (var i =
+                                                _credentialInputs.length - 2;
+                                            i >= 0;
+                                            --i) {
+                                          _credentialInputs[i] = DoubleField(
+                                            index: i,
+                                            isOne:
+                                                _credentialInputs.length + 1 <
+                                                    2,
+                                            keyControllers: _keyControllers,
+                                            valueControllers: _valueControllers,
+                                            deviceSize: deviceSize,
+                                            fn: _setInputs,
+                                          );
+                                        }
+                                      });
+                                    },
+                                  ),
+                                )
+                            ],
                           ),
-                        )
-                    ],
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  RaisedButton.icon(
+                      onPressed: _isLoading ? () {} : _saveForm,
+                      elevation: 3.0,
+                      icon: Icon(Icons.lock),
+                      color: Colors.amber,
+                      textColor: Theme.of(context).accentColor,
+                      label: _isLoading
+                          ? CircularProgressIndicator()
+                          : widget.args['editMode']
+                              ? const Text("UPDATE CREDENTIAL")
+                              : const Text("STORE CREDENTIAL"))
+                ],
               ),
             ),
-          ),
-          SizedBox(
-            height: 20.0,
-          ),
-          RaisedButton.icon(
-              onPressed: _isLoading ? () {} : _saveForm,
-              elevation: 3.0,
-              icon: Icon(Icons.lock),
-              color: Colors.amber,
-              textColor: Theme.of(context).accentColor,
-              label: _isLoading
-                  ? CircularProgressIndicator()
-                  : const Text("STORE CREDENTIAL"))
-        ],
-      ),
     );
   }
 }

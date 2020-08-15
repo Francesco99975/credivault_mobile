@@ -9,6 +9,8 @@ class Credentials with ChangeNotifier {
     return [..._items];
   }
 
+  var _credVisible = true;
+
   Future<void> loadCredentials() async {
     _items = await DatabseProvider.db.getCredentials();
     notifyListeners();
@@ -39,5 +41,14 @@ class Credentials with ChangeNotifier {
 
   int size() {
     return _items.length;
+  }
+
+  void toggleVisible() {
+    _credVisible = !_credVisible;
+    notifyListeners();
+  }
+
+  bool visible() {
+    return _credVisible;
   }
 }
