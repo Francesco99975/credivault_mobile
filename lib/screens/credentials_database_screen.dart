@@ -1,5 +1,7 @@
 import 'package:credivault_mobile/providers/credentials.dart';
+import 'package:credivault_mobile/providers/settings_provider.dart';
 import 'package:credivault_mobile/screens/add_credential_screen.dart';
+import 'package:credivault_mobile/screens/settings_screen.dart';
 import 'package:credivault_mobile/widgets/credential_item.dart';
 import 'package:credivault_mobile/widgets/main_drawer.dart';
 import 'package:draggable_flutter_list/draggable_flutter_list.dart';
@@ -46,7 +48,8 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
           ),
           IconButton(
             icon: const Icon(Icons.vpn_key),
-            onPressed: () {},
+            onPressed: () =>
+                Navigator.of(context).pushNamed(SettingsScreen.ROUTE_NAME),
           ),
         ],
       ),
@@ -55,8 +58,11 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
         child: Container(
           color: Theme.of(context).accentColor,
           child: FutureBuilder(
-              future: Provider.of<Credentials>(context, listen: false)
-                  .loadCredentials(),
+              future: Future.wait([
+                Provider.of<Settings>(context, listen: false).loadSettings(),
+                Provider.of<Credentials>(context, listen: false)
+                    .loadCredentials(),
+              ]),
               builder: (context, snapshot) => snapshot.connectionState ==
                       ConnectionState.waiting
                   ? Center(child: CircularProgressIndicator())

@@ -11,6 +11,12 @@ class DatabseProvider {
   static const String COLUMN_CREDENTIAL_DATA = "credential_data";
   static const String COLUMN_PRIORITY = "priority";
 
+  static const TABLE_MASTER_PASSWORD = "master";
+  static const COLUMN_MASTER = "master_password";
+
+  static const TABLE_SETTINGS = "settings";
+  static const COLUMN_AUTH_MODE = "auth_mode";
+
   DatabseProvider._();
   static final db = DatabseProvider._();
 
@@ -38,6 +44,14 @@ class DatabseProvider {
             "$COLUMN_SERVICE TEXT NOT NULL,"
             "$COLUMN_CREDENTIAL_DATA TEXT,"
             "$COLUMN_PRIORITY INTEGER NOT NULL);");
+        await db.execute("CREATE TABLE IF NOT EXISTS $TABLE_MASTER_PASSWORD("
+            "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "$COLUMN_MASTER TEXT);");
+        await db.insert(TABLE_MASTER_PASSWORD, {COLUMN_MASTER: " "});
+        await db.execute("CREATE TABLE IF NOT EXISTS $TABLE_SETTINGS("
+            "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "$COLUMN_AUTH_MODE INTEGER NOT NULL DEFAULT 0);");
+        await db.insert(TABLE_SETTINGS, {COLUMN_AUTH_MODE: 0});
       },
     );
   }
@@ -61,6 +75,22 @@ class DatabseProvider {
     return credList;
   }
 
+  Future<String> getEncryptedMasterPassword() async {
+    final db = await database;
+
+    var res = await db.query(TABLE_MASTER_PASSWORD, columns: [COLUMN_MASTER]);
+
+    return res[0][COLUMN_MASTER];
+  }
+
+  Future<bool> getAuthMode() async {
+    final db = await database;
+
+    var res = await db.query(TABLE_SETTINGS, columns: [COLUMN_AUTH_MODE]);
+
+    return res[0][COLUMN_AUTH_MODE] == 0 ? false : true;
+  }
+
   Future<int> countCredentials() async {
     final db = await database;
 
@@ -78,6 +108,21 @@ class DatabseProvider {
     final db = await database;
     return await db.update(TABLE_CREDENTIALS, crd.toMap(),
         where: "$COLUMN_ID = ?", whereArgs: [id]);
+  }
+
+  Future<int> setEncryptedMasterPassword(String encryptedPassword) async {
+    final db = await database;
+
+    return await db.update(
+        TABLE_CREDENTIALS, {COLUMN_MASTER: encryptedPassword},
+        where: "$COLUMN_ID = 1");
+  }
+
+  Future<int> setAuthMode(bool mode) async {
+    final db = await database;
+
+    return await db.update(TABLE_SETTINGS, {COLUMN_AUTH_MODE: mode ? 1 : 0},
+        where: "$COLUMN_ID == 1");
   }
 
   Future<int> deleteCredential(String id) async {

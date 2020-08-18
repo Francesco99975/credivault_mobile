@@ -1,4 +1,6 @@
+import 'package:credivault_mobile/providers/settings_provider.dart';
 import 'package:credivault_mobile/screens/loading_screen.dart';
+import 'package:credivault_mobile/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:credivault_mobile/providers/credentials.dart';
@@ -13,9 +15,14 @@ void main() {
 class CredivaultApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => Credentials(),
-      child: MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => Credentials()),
+        ChangeNotifierProvider(
+          create: (_) => Settings(),
+        )
+      ],
+      builder: (_, __) => MaterialApp(
         theme: ThemeData(
             primaryColor: Colors.teal[700],
             accentColor: Colors.indigo[900],
@@ -26,7 +33,8 @@ class CredivaultApp extends StatelessWidget {
           CredentialsDatabaseScreen.ROUTE_NAME: (_) =>
               CredentialsDatabaseScreen(),
           AddCredentialScreen.ROUTE_NAME: (_) => AddCredentialScreen(),
-          LoadingScreen.ROUTE_NAME: (_) => LoadingScreen()
+          LoadingScreen.ROUTE_NAME: (_) => LoadingScreen(),
+          SettingsScreen.ROUTE_NAME: (_) => SettingsScreen()
         },
       ),
     );
