@@ -18,26 +18,9 @@ class CredentialsDatabaseScreen extends StatefulWidget {
 }
 
 class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  void _showSnackBar() {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text(
-          "Copied to Clipboard!",
-          style: TextStyle(color: Colors.white),
-        ),
-        duration: Duration(seconds: 1),
-        onVisible: () {
-          Future.delayed(Duration(seconds: 1))
-              .then((value) => _scaffoldKey.currentState.hideCurrentSnackBar());
-        },
-        backgroundColor: Colors.black));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         title: const Text("Your Credentials"),
         actions: <Widget>[
@@ -84,7 +67,7 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
                                   itemBuilder: (_, index) =>
                                       ChangeNotifierProvider.value(
                                     value: credentials.items[index],
-                                    child: CredentialItem(_showSnackBar),
+                                    child: CredentialItem(),
                                   ),
                                   dragElevation: 8.0,
                                   canBeDraggedTo: (oldIndex, newIndex) => true,

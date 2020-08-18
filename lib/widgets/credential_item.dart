@@ -6,10 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CredentialItem extends StatelessWidget {
-  final Function _showSnackBar;
-
-  CredentialItem(this._showSnackBar);
-
   @override
   Widget build(BuildContext context) {
     final credential = Provider.of<Credential>(context);
@@ -78,7 +74,7 @@ class CredentialItem extends StatelessWidget {
                         .pushNamed(AddCredentialScreen.ROUTE_NAME,
                             arguments: {'editMode': true, 'id': credential.id}),
                   ),
-                  ShowCredentials(credential, _showSnackBar),
+                  ShowCredentials(credential),
                 ],
               ),
             )),
