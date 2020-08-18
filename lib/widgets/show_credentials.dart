@@ -31,7 +31,8 @@ class _ShowCredentialsState extends State<ShowCredentials> {
         body: json.encode(widget._credential.credentialData),
         headers: {HttpHeaders.contentTypeHeader: "application/json"});
     _decryptedCredentials = json.decode(res.body) as Map<String, dynamic>;
-    Navigator.pushNamed(context, CredentialsDatabaseScreen.ROUTE_NAME);
+    Navigator.pushReplacementNamed(
+        context, CredentialsDatabaseScreen.ROUTE_NAME);
   }
 
   Future<bool> _requestPassword(String req) async {
@@ -81,10 +82,13 @@ class _ShowCredentialsState extends State<ShowCredentials> {
             ),
           );
 
-          access = await _requestPassword(req);
+          if (req == null) return;
+
+          access = await _requestPassword(req == null ? "" : req);
 
           if (!access) {
-            Navigator.pushNamed(context, CredentialsDatabaseScreen.ROUTE_NAME);
+            Navigator.pushReplacementNamed(
+                context, CredentialsDatabaseScreen.ROUTE_NAME);
             await showDialog(
                 context: context,
                 builder: (_) => AlertDialog(
