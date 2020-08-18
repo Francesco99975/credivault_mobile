@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:credivault_mobile/providers/biometrics_provider.dart';
+import 'package:credivault_mobile/providers/settings_provider.dart';
 import 'package:credivault_mobile/screens/credentials_database_screen.dart';
 import 'package:credivault_mobile/screens/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:credivault_mobile/providers/credential.dart';
+import 'package:provider/provider.dart';
 
 class ShowCredentials extends StatefulWidget {
   final Credential _credential;
@@ -21,12 +24,26 @@ class _ShowCredentialsState extends State<ShowCredentials> {
   Map<String, dynamic> _decryptedCredentials;
 
   Future<void> _decryptCredentials() async {
-    Navigator.pushNamed(context, LoadingScreen.ROUTE_NAME);
+    if (Provider.of<Settings>(context, listen: false).authMode) {
+      Navigator.pushNamed(context, LoadingScreen.ROUTE_NAME);
+    }
     final res = await http.post("$_url/decrypt",
         body: json.encode(widget._credential.credentialData),
         headers: {HttpHeaders.contentTypeHeader: "application/json"});
     _decryptedCredentials = json.decode(res.body) as Map<String, dynamic>;
     Navigator.pushNamed(context, CredentialsDatabaseScreen.ROUTE_NAME);
+  }
+
+  Future<bool> _requestPassword(String req) async {
+    Navigator.pushNamed(context, LoadingScreen.ROUTE_NAME);
+    final password =
+        await Provider.of<Settings>(context, listen: false).masterPassword;
+    //Navigator.pushNamed(context, CredentialsDatabaseScreen.ROUTE_NAME);
+    if (req.trim() == password) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @override
@@ -35,6 +52,50 @@ class _ShowCredentialsState extends State<ShowCredentials> {
       icon: Icon(Icons.visibility),
       color: Theme.of(context).accentColor,
       onPressed: () async {
+        if (Provider.of<Settings>(context, listen: false).authMode) {
+          final res = await Provider.of<Biometrics>(context, listen: false)
+              .fingerprintAuth();
+          if (!res) return;
+        } else if (Provider.of<Settings>(context, listen: false).unset()) {
+          final _controller = TextEditingController();
+          var access = false;
+          final String req = await showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text(
+                "Enter Master Password",
+                textAlign: TextAlign.center,
+              ),
+              content: TextField(
+                decoration: InputDecoration(labelText: "Enter Master Password"),
+                obscureText: true,
+                controller: _controller,
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Submit"),
+                  onPressed: () async {
+                    Navigator.of(context).pop(_controller.text);
+                  },
+                )
+              ],
+            ),
+          );
+
+          access = await _requestPassword(req);
+
+          if (!access) {
+            Navigator.pushNamed(context, CredentialsDatabaseScreen.ROUTE_NAME);
+            await showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                      title: const Text("Invalid Password"),
+                      content:
+                          const Text("The password you entered is not correct"),
+                    ));
+            return;
+          }
+        }
         await _decryptCredentials();
         await showDialog(
           context: context,

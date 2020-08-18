@@ -25,8 +25,13 @@ class Settings with ChangeNotifier {
   }
 
   Future<void> setMasterPassword(String password) async {
-    await DatabseProvider.db.setEncryptedMasterPassword(password);
-    _encryptedMasterPassword = password;
+    final res = await http.post("$_url/encrypt",
+        body: json.encode({'data': password}),
+        headers: {HttpHeaders.contentTypeHeader: "application/json"});
+    final extractedData = json.decode(res.body);
+    _encryptedMasterPassword = extractedData['data'];
+    await DatabseProvider.db
+        .setEncryptedMasterPassword(_encryptedMasterPassword);
     notifyListeners();
   }
 

@@ -1,3 +1,4 @@
+import 'package:credivault_mobile/providers/biometrics_provider.dart';
 import 'package:credivault_mobile/providers/settings_provider.dart';
 import 'package:credivault_mobile/screens/loading_screen.dart';
 import 'package:credivault_mobile/screens/settings_screen.dart';
@@ -17,10 +18,13 @@ class CredivaultApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => Credentials()),
         ChangeNotifierProvider(
           create: (_) => Settings(),
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (_) => Biometrics(),
+        ),
+        ChangeNotifierProvider(create: (_) => Credentials()),
       ],
       builder: (_, __) => MaterialApp(
         theme: ThemeData(

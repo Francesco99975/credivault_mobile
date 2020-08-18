@@ -1,3 +1,4 @@
+import 'package:credivault_mobile/providers/biometrics_provider.dart';
 import 'package:credivault_mobile/providers/credentials.dart';
 import 'package:credivault_mobile/providers/settings_provider.dart';
 import 'package:credivault_mobile/screens/add_credential_screen.dart';
@@ -60,6 +61,8 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
           child: FutureBuilder(
               future: Future.wait([
                 Provider.of<Settings>(context, listen: false).loadSettings(),
+                Provider.of<Biometrics>(context, listen: false)
+                    .loadBiometrics(),
                 Provider.of<Credentials>(context, listen: false)
                     .loadCredentials(),
               ]),

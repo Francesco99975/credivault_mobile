@@ -114,7 +114,7 @@ class DatabseProvider {
     final db = await database;
 
     return await db.update(
-        TABLE_CREDENTIALS, {COLUMN_MASTER: encryptedPassword},
+        TABLE_MASTER_PASSWORD, {COLUMN_MASTER: encryptedPassword},
         where: "$COLUMN_ID = 1");
   }
 

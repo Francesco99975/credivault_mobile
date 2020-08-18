@@ -1,3 +1,4 @@
+import 'package:credivault_mobile/providers/biometrics_provider.dart';
 import 'package:credivault_mobile/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  var _isLoading = false;
   @override
   Widget build(BuildContext context) {
     final _masterController = TextEditingController();
@@ -29,9 +31,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ? const Text("Fingerprint")
                         : const Text("Master Password"),
                     value: settings.authMode,
-                    onChanged: (_) async =>
-                        await Provider.of<Settings>(context, listen: false)
-                            .toggleAuthMode()),
+                    onChanged: Provider.of<Biometrics>(context, listen: false)
+                            .canUseBiometrics
+                        ? (_) async =>
+                            await Provider.of<Settings>(context, listen: false)
+                                .toggleAuthMode()
+                        : null),
                 SizedBox(
                   height: 10,
                 ),
@@ -55,11 +60,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             if (settings.unset())
                               TextField(
                                 controller: _remasterController,
+                                obscureText: true,
                                 decoration: InputDecoration(
                                     labelText: "Enter current Master password"),
                               ),
                             TextField(
                               controller: _masterController,
+                              obscureText: true,
                               decoration: InputDecoration(
                                   labelText: "Enter a new Master password"),
                             ),
@@ -67,8 +74,76 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               height: 10,
                             ),
                             RaisedButton(
-                              onPressed: () {},
-                              child: const Text("SET MASTER PASSWORD"),
+                              onPressed: () async {
+                                setState(() {
+                                  _isLoading = !_isLoading;
+                                });
+                                if (!settings.unset()) {
+                                  if (_masterController.text
+                                      .trim()
+                                      .isNotEmpty) {
+                                    await Provider.of<Settings>(context,
+                                            listen: false)
+                                        .setMasterPassword(
+                                            _masterController.text.trim());
+                                  } else {
+                                    await showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text("An Error Occurred"),
+                                        content: const Text(
+                                            "Password could not be set"),
+                                        actions: <Widget>[
+                                          FlatButton(
+                                            child: const Text("Dismiss"),
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                } else {
+                                  print("Thhere");
+                                  final currentMasterPassword =
+                                      await Provider.of<Settings>(context,
+                                              listen: false)
+                                          .masterPassword;
+                                  if (_masterController.text
+                                          .trim()
+                                          .isNotEmpty &&
+                                      _remasterController.text.trim() ==
+                                          currentMasterPassword) {
+                                    await Provider.of<Settings>(context,
+                                            listen: false)
+                                        .setMasterPassword(
+                                            _masterController.text.trim());
+                                  } else {
+                                    await showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text("An Error Occurred"),
+                                        content: const Text(
+                                            "Password could not be set"),
+                                        actions: <Widget>[
+                                          FlatButton(
+                                            child: const Text("Dismiss"),
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                }
+                                setState(() {
+                                  _isLoading = !_isLoading;
+                                });
+                                Navigator.of(context).pop();
+                              },
+                              child: !_isLoading
+                                  ? const Text("SET MASTER PASSWORD")
+                                  : CircularProgressIndicator(),
                               color: Theme.of(context).accentColor,
                               textColor: Colors.amber,
                             )
