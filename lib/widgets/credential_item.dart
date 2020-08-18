@@ -1,6 +1,5 @@
 import 'package:credivault_mobile/providers/credential.dart';
 import 'package:credivault_mobile/providers/credentials.dart';
-import 'package:credivault_mobile/screens/add_credential_screen.dart';
 import 'package:credivault_mobile/widgets/edit_credentials.dart';
 import 'package:credivault_mobile/widgets/show_credentials.dart';
 import 'package:flutter/material.dart';
