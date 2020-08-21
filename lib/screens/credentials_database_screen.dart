@@ -1,5 +1,6 @@
 import 'package:credivault_mobile/providers/biometrics_provider.dart';
 import 'package:credivault_mobile/providers/credentials.dart';
+import 'package:credivault_mobile/providers/rsa_provider.dart';
 import 'package:credivault_mobile/providers/settings_provider.dart';
 import 'package:credivault_mobile/screens/add_credential_screen.dart';
 import 'package:credivault_mobile/screens/settings_screen.dart';
@@ -43,6 +44,7 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
           color: Theme.of(context).accentColor,
           child: FutureBuilder(
               future: Future.wait([
+                Provider.of<RSAProvider>(context, listen: false).getKeyPair(),
                 Provider.of<Settings>(context, listen: false).loadSettings(),
                 Provider.of<Biometrics>(context, listen: false)
                     .loadBiometrics(),
@@ -51,7 +53,18 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
               ]),
               builder: (context, snapshot) => snapshot.connectionState ==
                       ConnectionState.waiting
-                  ? Center(child: CircularProgressIndicator())
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        LinearProgressIndicator(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        const Text("Generating Secure RSA Keys...",
+                            textAlign: TextAlign.center)
+                      ],
+                    )
                   : Consumer<Credentials>(
                       child: Center(
                         child: const Text(

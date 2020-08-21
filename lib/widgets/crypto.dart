@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:credivault_mobile/providers/rsa_provider.dart';
 import 'package:credivault_mobile/widgets/error_message.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 class Crypto extends StatefulWidget {
   @override
@@ -22,10 +20,7 @@ class _CryptoState extends State<Crypto> {
       _isLoading = !_isLoading;
     });
     final res = await http.post("$_url/encrypt",
-        body: json.encode({
-          'data':
-              Provider.of<RSAProvider>(context, listen: false).encrypt(message)
-        }),
+        body: json.encode({'data': message}),
         headers: {HttpHeaders.contentTypeHeader: "application/json"});
     final extractedData = json.decode(res.body);
 
@@ -57,8 +52,7 @@ class _CryptoState extends State<Crypto> {
     final extractedData = json.decode(res.body);
 
     if (res.statusCode == 200) {
-      final decryptedData = Provider.of<RSAProvider>(context, listen: false)
-          .decrypt(extractedData['data']);
+      final decryptedData = extractedData['data'];
       setState(() {
         _isLoading = !_isLoading;
         _textController.text = decryptedData;

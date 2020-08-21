@@ -35,11 +35,10 @@ class CredivaultApp extends StatelessWidget {
             primaryColor: Colors.teal[700],
             accentColor: Colors.indigo[900],
             brightness: Brightness.dark),
-        home: FastCryptoScreen(),
+        home: CredentialsDatabaseScreen(),
         title: "Credivault",
         routes: {
-          CredentialsDatabaseScreen.ROUTE_NAME: (_) =>
-              CredentialsDatabaseScreen(),
+          FastCryptoScreen.ROUTE_NAME: (_) => FastCryptoScreen(),
           AddCredentialScreen.ROUTE_NAME: (_) => AddCredentialScreen(),
           LoadingScreen.ROUTE_NAME: (_) => LoadingScreen(),
           SettingsScreen.ROUTE_NAME: (_) => SettingsScreen()

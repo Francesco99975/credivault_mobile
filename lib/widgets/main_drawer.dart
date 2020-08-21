@@ -1,4 +1,4 @@
-import 'package:credivault_mobile/screens/credentials_database_screen.dart';
+import 'package:credivault_mobile/screens/fast_crypto_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -20,9 +20,9 @@ class MainDrawer extends StatelessWidget {
             title: const Text("Credivault"),
             automaticallyImplyLeading: false,
           ),
-          _buildRoute(context, "Fast Crypto", Icons.enhanced_encryption, "/"),
-          _buildRoute(context, "Credentials Database", Icons.storage,
-              CredentialsDatabaseScreen.ROUTE_NAME),
+          _buildRoute(context, "Credentials Database", Icons.storage, "/"),
+          _buildRoute(context, "Fast Crypto", Icons.enhanced_encryption,
+              FastCryptoScreen.ROUTE_NAME),
         ],
       ),
     );
