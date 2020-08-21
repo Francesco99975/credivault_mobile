@@ -1,10 +1,10 @@
-import 'package:credivault_mobile/providers/rsa_provider.dart';
-import 'package:credivault_mobile/widgets/double_field.dart';
 import 'package:flutter/material.dart';
-import 'package:credivault_mobile/providers/credential.dart';
-import 'package:credivault_mobile/providers/credentials.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import '../providers/rsa_provider.dart';
+import '../widgets/double_field.dart';
+import '../providers/credential.dart';
+import '../providers/credentials.dart';
 
 class AddCredentialScreen extends StatelessWidget {
   static const ROUTE_NAME = '/add-credential';

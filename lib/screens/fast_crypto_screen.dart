@@ -1,6 +1,6 @@
-import 'package:credivault_mobile/widgets/crypto.dart';
-import 'package:credivault_mobile/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
+import '../widgets/crypto.dart';
+import '../widgets/main_drawer.dart';
 
 class FastCryptoScreen extends StatelessWidget {
   static const ROUTE_NAME = '/fast-crypto';

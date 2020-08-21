@@ -1,14 +1,14 @@
-import 'package:credivault_mobile/providers/biometrics_provider.dart';
-import 'package:credivault_mobile/providers/credentials.dart';
-import 'package:credivault_mobile/providers/rsa_provider.dart';
-import 'package:credivault_mobile/providers/settings_provider.dart';
-import 'package:credivault_mobile/screens/add_credential_screen.dart';
-import 'package:credivault_mobile/screens/settings_screen.dart';
-import 'package:credivault_mobile/widgets/credential_item.dart';
-import 'package:credivault_mobile/widgets/main_drawer.dart';
-import 'package:draggable_flutter_list/draggable_flutter_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:draggable_flutter_list/draggable_flutter_list.dart';
+import '../providers/biometrics_provider.dart';
+import '../providers/credentials.dart';
+import '../providers/rsa_provider.dart';
+import '../providers/settings_provider.dart';
+import '../screens/add_credential_screen.dart';
+import '../screens/settings_screen.dart';
+import '../widgets/credential_item.dart';
+import '../widgets/main_drawer.dart';
 
 class CredentialsDatabaseScreen extends StatefulWidget {
   static const ROUTE_NAME = '/credentials-database';

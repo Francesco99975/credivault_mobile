@@ -1,5 +1,5 @@
-import 'package:credivault_mobile/screens/fast_crypto_screen.dart';
 import 'package:flutter/material.dart';
+import '../screens/fast_crypto_screen.dart';
 
 class MainDrawer extends StatelessWidget {
   Widget _buildRoute(

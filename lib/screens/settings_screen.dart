@@ -1,7 +1,7 @@
-import 'package:credivault_mobile/providers/biometrics_provider.dart';
-import 'package:credivault_mobile/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/biometrics_provider.dart';
+import '../providers/settings_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const ROUTE_NAME = "/settings";

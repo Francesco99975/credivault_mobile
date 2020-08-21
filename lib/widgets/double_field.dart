@@ -1,7 +1,7 @@
-import 'package:credivault_mobile/providers/credentials.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
+import '../providers/credentials.dart';
 
 class DoubleField extends StatelessWidget {
   final int index;

@@ -1,10 +1,10 @@
-import 'package:credivault_mobile/providers/biometrics_provider.dart';
-import 'package:credivault_mobile/providers/credential.dart';
-import 'package:credivault_mobile/providers/settings_provider.dart';
-import 'package:credivault_mobile/screens/add_credential_screen.dart';
-import 'package:credivault_mobile/screens/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/biometrics_provider.dart';
+import '../providers/credential.dart';
+import '../providers/settings_provider.dart';
+import '../screens/add_credential_screen.dart';
+import '../screens/loading_screen.dart';
 
 class EditCredentials extends StatefulWidget {
   final Credential _credential;

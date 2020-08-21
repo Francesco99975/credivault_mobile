@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:convert';
-import 'package:credivault_mobile/db/database_provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import '../db/database_provider.dart';
 
 class Settings with ChangeNotifier {
   static const _url = "https://bme-encdec-server.herokuapp.com";

@@ -1,9 +1,9 @@
-import 'package:credivault_mobile/providers/credential.dart';
-import 'package:credivault_mobile/providers/credentials.dart';
-import 'package:credivault_mobile/widgets/edit_credentials.dart';
-import 'package:credivault_mobile/widgets/show_credentials.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/credential.dart';
+import '../providers/credentials.dart';
+import '../widgets/edit_credentials.dart';
+import '../widgets/show_credentials.dart';
 
 class CredentialItem extends StatelessWidget {
   @override

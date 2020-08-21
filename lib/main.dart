@@ -1,14 +1,14 @@
-import 'package:credivault_mobile/providers/biometrics_provider.dart';
-import 'package:credivault_mobile/providers/rsa_provider.dart';
-import 'package:credivault_mobile/providers/settings_provider.dart';
-import 'package:credivault_mobile/screens/loading_screen.dart';
-import 'package:credivault_mobile/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:credivault_mobile/providers/credentials.dart';
-import 'package:credivault_mobile/screens/add_credential_screen.dart';
-import 'package:credivault_mobile/screens/credentials_database_screen.dart';
-import 'package:credivault_mobile/screens/fast_crypto_screen.dart';
+import './providers/biometrics_provider.dart';
+import './providers/rsa_provider.dart';
+import './providers/settings_provider.dart';
+import './screens/loading_screen.dart';
+import './screens/settings_screen.dart';
+import './providers/credentials.dart';
+import './screens/add_credential_screen.dart';
+import './screens/credentials_database_screen.dart';
+import './screens/fast_crypto_screen.dart';
 
 void main() {
   runApp(CredivaultApp());

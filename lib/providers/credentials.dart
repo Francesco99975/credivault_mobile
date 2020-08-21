@@ -1,5 +1,5 @@
-import 'package:credivault_mobile/providers/credential.dart';
 import 'package:flutter/foundation.dart';
+import '../providers/credential.dart';
 import '../db/database_provider.dart';
 
 class Credentials with ChangeNotifier {
