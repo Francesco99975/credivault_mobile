@@ -1,4 +1,5 @@
 import 'package:credivault_mobile/providers/biometrics_provider.dart';
+import 'package:credivault_mobile/providers/rsa_provider.dart';
 import 'package:credivault_mobile/providers/settings_provider.dart';
 import 'package:credivault_mobile/screens/loading_screen.dart';
 import 'package:credivault_mobile/screens/settings_screen.dart';
@@ -23,6 +24,9 @@ class CredivaultApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => Biometrics(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => RSAProvider(),
         ),
         ChangeNotifierProvider(create: (_) => Credentials()),
       ],
