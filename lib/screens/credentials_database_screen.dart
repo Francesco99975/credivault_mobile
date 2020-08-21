@@ -57,11 +57,18 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        LinearProgressIndicator(),
+                        LinearProgressIndicator(
+                          backgroundColor: Colors.amber,
+                        ),
                         SizedBox(
                           height: 10,
                         ),
                         const Text("Generating Secure RSA Keys...",
+                            textAlign: TextAlign.center),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        const Text("This may take a minute...",
                             textAlign: TextAlign.center)
                       ],
                     )

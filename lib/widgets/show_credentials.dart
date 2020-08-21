@@ -1,7 +1,6 @@
 import 'package:credivault_mobile/providers/biometrics_provider.dart';
 import 'package:credivault_mobile/providers/rsa_provider.dart';
 import 'package:credivault_mobile/providers/settings_provider.dart';
-import 'package:credivault_mobile/screens/credentials_database_screen.dart';
 import 'package:credivault_mobile/screens/loading_screen.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
