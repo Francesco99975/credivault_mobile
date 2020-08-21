@@ -1,12 +1,10 @@
-import 'dart:convert';
-import 'dart:io';
+import 'package:credivault_mobile/providers/rsa_provider.dart';
 import 'package:credivault_mobile/widgets/double_field.dart';
 import 'package:flutter/material.dart';
 import 'package:credivault_mobile/providers/credential.dart';
 import 'package:credivault_mobile/providers/credentials.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:http/http.dart' as http;
 
 class AddCredentialScreen extends StatelessWidget {
   static const ROUTE_NAME = '/add-credential';
@@ -65,7 +63,6 @@ class AddCredentialForm extends StatefulWidget {
 }
 
 class _AddCredentialFormState extends State<AddCredentialForm> {
-  static const _url = "https://bme-encdec-server.herokuapp.com";
   final GlobalKey<FormState> _formKey = GlobalKey();
   var _isLoading = false;
   Size deviceSize;
@@ -131,11 +128,8 @@ class _AddCredentialFormState extends State<AddCredentialForm> {
             .findById(widget.args['id']);
         _ownerController.text = crd.owner;
         _serviceController.text = crd.service;
-        final res = await http.post("$_url/decrypt",
-            body: json.encode(crd.credentialData),
-            headers: {HttpHeaders.contentTypeHeader: "application/json"});
-        final decryptedCredentialData =
-            json.decode(res.body) as Map<String, dynamic>;
+        final decryptedCredentialData = crd.credentialData.map((key, value) =>
+            MapEntry(key, Provider.of<RSAProvider>(context).decrypt(value)));
         decryptedCredentialData.forEach((key, value) {
           _credentialInputs.add(_getCredentialInput(_credentialInputs.length,
               key: key, value: value));
@@ -165,12 +159,8 @@ class _AddCredentialFormState extends State<AddCredentialForm> {
             .addAll({_keyControllers[i].text: _valueControllers[i].text});
       }
 
-      final res = await http.post("$_url/encrypt",
-          body: json.encode(_credetialData),
-          headers: {HttpHeaders.contentTypeHeader: "application/json"});
-
-      final _encryptedCredetialData =
-          json.decode(res.body) as Map<String, dynamic>;
+      final _encryptedCredetialData = _credetialData.map((key, value) =>
+          MapEntry(key, Provider.of<RSAProvider>(context).encrypt(value)));
 
       if (!widget.args['editMode']) {
         final lastIndex =

@@ -1,13 +1,11 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:credivault_mobile/providers/biometrics_provider.dart';
+import 'package:credivault_mobile/providers/rsa_provider.dart';
 import 'package:credivault_mobile/providers/settings_provider.dart';
 import 'package:credivault_mobile/screens/credentials_database_screen.dart';
 import 'package:credivault_mobile/screens/loading_screen.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:credivault_mobile/providers/credential.dart';
 import 'package:provider/provider.dart';
 
@@ -20,17 +18,16 @@ class ShowCredentials extends StatefulWidget {
 }
 
 class _ShowCredentialsState extends State<ShowCredentials> {
-  static const _url = "https://bme-encdec-server.herokuapp.com";
   Map<String, dynamic> _decryptedCredentials;
 
   Future<void> _decryptCredentials() async {
     if (Provider.of<Settings>(context, listen: false).authMode) {
       Navigator.pushNamed(context, LoadingScreen.ROUTE_NAME);
     }
-    final res = await http.post("$_url/decrypt",
-        body: json.encode(widget._credential.credentialData),
-        headers: {HttpHeaders.contentTypeHeader: "application/json"});
-    _decryptedCredentials = json.decode(res.body) as Map<String, dynamic>;
+
+    _decryptedCredentials = widget._credential.credentialData.map(
+        (key, value) =>
+            MapEntry(key, Provider.of<RSAProvider>(context).decrypt(value)));
     Navigator.pushReplacementNamed(
         context, CredentialsDatabaseScreen.ROUTE_NAME);
   }
