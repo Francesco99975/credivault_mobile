@@ -129,7 +129,10 @@ class _AddCredentialFormState extends State<AddCredentialForm> {
         _ownerController.text = crd.owner;
         _serviceController.text = crd.service;
         final decryptedCredentialData = crd.credentialData.map((key, value) =>
-            MapEntry(key, Provider.of<RSAProvider>(context).decrypt(value)));
+            MapEntry(
+                key,
+                Provider.of<RSAProvider>(context, listen: false)
+                    .decrypt(value)));
         decryptedCredentialData.forEach((key, value) {
           _credentialInputs.add(_getCredentialInput(_credentialInputs.length,
               key: key, value: value));
@@ -160,7 +163,8 @@ class _AddCredentialFormState extends State<AddCredentialForm> {
       }
 
       final _encryptedCredetialData = _credetialData.map((key, value) =>
-          MapEntry(key, Provider.of<RSAProvider>(context).encrypt(value)));
+          MapEntry(key,
+              Provider.of<RSAProvider>(context, listen: false).encrypt(value)));
 
       if (!widget.args['editMode']) {
         final lastIndex =

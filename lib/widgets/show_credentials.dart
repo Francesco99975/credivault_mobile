@@ -26,10 +26,9 @@ class _ShowCredentialsState extends State<ShowCredentials> {
     }
 
     _decryptedCredentials = widget._credential.credentialData.map(
-        (key, value) =>
-            MapEntry(key, Provider.of<RSAProvider>(context).decrypt(value)));
-    Navigator.pushReplacementNamed(
-        context, CredentialsDatabaseScreen.ROUTE_NAME);
+        (key, value) => MapEntry(key,
+            Provider.of<RSAProvider>(context, listen: false).decrypt(value)));
+    Navigator.pushReplacementNamed(context, '/');
   }
 
   Future<bool> _requestPassword(String req) async {
@@ -84,8 +83,7 @@ class _ShowCredentialsState extends State<ShowCredentials> {
           access = await _requestPassword(req == null ? "" : req);
 
           if (!access) {
-            Navigator.pushReplacementNamed(
-                context, CredentialsDatabaseScreen.ROUTE_NAME);
+            Navigator.pushReplacementNamed(context, '/');
             await showDialog(
                 context: context,
                 builder: (_) => AlertDialog(

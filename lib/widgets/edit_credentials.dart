@@ -2,7 +2,6 @@ import 'package:credivault_mobile/providers/biometrics_provider.dart';
 import 'package:credivault_mobile/providers/credential.dart';
 import 'package:credivault_mobile/providers/settings_provider.dart';
 import 'package:credivault_mobile/screens/add_credential_screen.dart';
-import 'package:credivault_mobile/screens/credentials_database_screen.dart';
 import 'package:credivault_mobile/screens/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -69,8 +68,7 @@ class _EditCredentialsState extends State<EditCredentials> {
             access = await _requestPassword(req == null ? "" : req);
 
             if (!access) {
-              Navigator.pushReplacementNamed(
-                  context, CredentialsDatabaseScreen.ROUTE_NAME);
+              Navigator.pushReplacementNamed(context, '/');
               await showDialog(
                   context: context,
                   builder: (_) => AlertDialog(
@@ -81,8 +79,7 @@ class _EditCredentialsState extends State<EditCredentials> {
               return;
             }
           }
-          Navigator.pushReplacementNamed(
-              context, CredentialsDatabaseScreen.ROUTE_NAME);
+          Navigator.pushReplacementNamed(context, '/');
           await Navigator.of(context).pushNamed(AddCredentialScreen.ROUTE_NAME,
               arguments: {'editMode': true, 'id': widget._credential.id});
         });
