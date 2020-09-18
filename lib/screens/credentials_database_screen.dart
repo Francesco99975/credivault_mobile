@@ -25,6 +25,7 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
       appBar: AppBar(
         title: const Text("Your Credentials"),
         actions: <Widget>[
+          //if(paid || Provider.of<Credentials>(context).items.length < 5)
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () => Navigator.of(context).pushNamed(
@@ -32,7 +33,7 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
                 arguments: {'editMode': false}),
           ),
           IconButton(
-            icon: const Icon(Icons.vpn_key),
+            icon: const Icon(Icons.settings),
             onPressed: () =>
                 Navigator.of(context).pushNamed(SettingsScreen.ROUTE_NAME),
           ),

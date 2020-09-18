@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 import './providers/biometrics_provider.dart';
 import './providers/rsa_provider.dart';
@@ -11,6 +12,7 @@ import './screens/credentials_database_screen.dart';
 import './screens/fast_crypto_screen.dart';
 
 void main() {
+  InAppPurchaseConnection.enablePendingPurchases();
   runApp(CredivaultApp());
 }
 

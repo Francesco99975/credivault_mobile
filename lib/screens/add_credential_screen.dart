@@ -17,7 +17,8 @@ class AddCredentialScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text("Add a new credential"),
+          title: Text(
+              args['editMode'] ? "Update Credential" : "Add a new Credential"),
           centerTitle: true,
           actions: <Widget>[
             IconButton(
