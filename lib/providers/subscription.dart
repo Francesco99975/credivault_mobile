@@ -1,22 +1,103 @@
-// import 'dart:async';
-// import 'package:flutter/foundation.dart';
-// import 'package:in_app_purchase/in_app_purchase.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
-// class Subscription with ChangeNotifier {
-//   final List<String> _kProductIds = <String>['upgrade', 'subscription'];
-//   StreamSubscription<List<PurchaseDetails>> _subscription;
+class Subscription with ChangeNotifier {
+  final List<String> _kProductIds = <String>[
+    'dev.francescobarranca.credivault_mobile'
+  ];
+  StreamSubscription<List<PurchaseDetails>> _subscription;
+  List<ProductDetails> products;
 
-//   Future<bool> available() async {
-//     await InAppPurchaseConnection.instance.isAvailable();
-//   }
+  bool isSubscribed = false;
+  bool isPending = true;
+  bool available = false;
 
-//   void _handlePurchaseUpdates(PurchaseDetails purchases) {}
+  bool _verifyPurchase(PurchaseDetails purchase) {
+    return purchase != null && purchase.status == PurchaseStatus.purchased;
+  }
 
-//   void loadSubscription() {
-//     final Stream purchaseUpdates =
-//         InAppPurchaseConnection.instance.purchaseUpdatedStream;
-//     _subscription = purchaseUpdates.listen((purchases) {
-//       _handlePurchaseUpdates(purchases);
-//     }, onDone: () => _subscription.cancel());
-//   }
-// }
+  void _deliverPurchase(PurchaseDetails purchase) {
+    if (purchase.productID == _kProductIds[0]) {
+      isSubscribed = true;
+      notifyListeners();
+    }
+  }
+
+  Future<void> buySubscription() async {
+    PurchaseParam purchaseParam = PurchaseParam(
+        productDetails: products[0],
+        applicationUserName: null,
+        sandboxTesting: true);
+    await InAppPurchaseConnection.instance
+        .buyNonConsumable(purchaseParam: purchaseParam);
+  }
+
+  Future<void> _handlePurchaseUpdates(
+      List<PurchaseDetails> purchaseDetailsList) async {
+    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      if (purchaseDetails.status == PurchaseStatus.pending) {
+        isPending = true;
+      } else {
+        isPending = false;
+        if (purchaseDetails.status == PurchaseStatus.error) {
+          print(purchaseDetails.error);
+        } else if (purchaseDetails.status == PurchaseStatus.purchased) {
+          bool valid = _verifyPurchase(purchaseDetails);
+          if (valid) {
+            _deliverPurchase(purchaseDetails);
+          } else {
+            isSubscribed = false;
+            return;
+          }
+        }
+        if (purchaseDetails.pendingCompletePurchase) {
+          await InAppPurchaseConnection.instance
+              .completePurchase(purchaseDetails);
+        }
+      }
+    });
+  }
+
+  Future<void> loadSubscription() async {
+    available = await InAppPurchaseConnection.instance.isAvailable();
+    if (available) {
+      final Stream purchaseUpdates =
+          InAppPurchaseConnection.instance.purchaseUpdatedStream;
+      _subscription = purchaseUpdates.listen((purchases) {
+        _handlePurchaseUpdates(purchases);
+      }, onDone: () => _subscription.cancel());
+
+      final ProductDetailsResponse response = await InAppPurchaseConnection
+          .instance
+          .queryProductDetails(_kProductIds.toSet());
+
+      if (response.notFoundIDs.isNotEmpty) {
+        print("Product not found");
+        available = false;
+        notifyListeners();
+      }
+
+      products = response.productDetails;
+      print(products);
+      print(products[0].description);
+
+      final QueryPurchaseDetailsResponse responsePast =
+          await InAppPurchaseConnection.instance.queryPastPurchases();
+      if (responsePast.error != null) {
+        available = false;
+        print("Past Purchase error");
+        notifyListeners();
+      }
+      for (PurchaseDetails purchase in responsePast.pastPurchases) {
+        if (_verifyPurchase(purchase)) {
+          _deliverPurchase(purchase);
+          if (Platform.isIOS) {
+            InAppPurchaseConnection.instance.completePurchase(purchase);
+          }
+        }
+      }
+    }
+  }
+}

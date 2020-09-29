@@ -1,3 +1,4 @@
+import 'package:credivault_mobile/providers/subscription.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,9 @@ class CredivaultApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (_) => Subscription(),
+        ),
         ChangeNotifierProvider(
           create: (_) => Settings(),
         ),

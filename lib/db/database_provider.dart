@@ -75,6 +75,26 @@ class DatabseProvider {
     return credList;
   }
 
+  Future<List<Credential>> getLimitedCredentials() async {
+    final db = await database;
+
+    var credentials = await db.query(TABLE_CREDENTIALS,
+        columns: [
+          COLUMN_ID,
+          COLUMN_OWNER,
+          COLUMN_SERVICE,
+          COLUMN_CREDENTIAL_DATA,
+          COLUMN_PRIORITY
+        ],
+        orderBy: COLUMN_PRIORITY,
+        limit: 5);
+
+    List<Credential> credList = [];
+    credentials.forEach((crd) => credList.add(Credential.fromMap(crd)));
+
+    return credList;
+  }
+
   Future<String> getEncryptedMasterPassword() async {
     final db = await database;
 

@@ -11,8 +11,12 @@ class Credentials with ChangeNotifier {
 
   var _credVisible = true;
 
-  Future<void> loadCredentials() async {
-    _items = await DatabseProvider.db.getCredentials();
+  Future<void> loadCredentials(bool isSub) async {
+    if (isSub) {
+      _items = await DatabseProvider.db.getCredentials();
+    } else {
+      _items = await DatabseProvider.db.getLimitedCredentials();
+    }
     notifyListeners();
   }
 
