@@ -105,8 +105,12 @@ class _CryptoState extends State<Crypto> {
                     ),
                     RaisedButton(
                       color: Theme.of(context).accentColor,
+                      textColor: Colors.amber,
                       child: !_isLoading
-                          ? Text(_isEncrypt ? "Encrypt" : "Decrypt")
+                          ? Text(
+                              _isEncrypt ? "Encrypt" : "Decrypt",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )
                           : CircularProgressIndicator(
                               backgroundColor: Colors.amber,
                             ),

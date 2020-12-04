@@ -53,7 +53,10 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
               "With a montly subscription of $price, you can store and retreive an almost unlimited number of credentials!"),
           actions: <Widget>[
             FlatButton.icon(
-                onPressed: () async => await sub.buySubscription(),
+                onPressed: () async {
+                  await sub.buySubscription();
+                  Navigator.of(context).pop();
+                },
                 icon: Icon(Icons.star),
                 label: const Text("Subscribe Now"))
           ],
@@ -81,7 +84,11 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: FittedBox(child: const Text("Credentials")),
+        title: FittedBox(
+            child: Text(
+          "Credentials",
+          style: Theme.of(context).textTheme.headline1,
+        )),
         actions: <Widget>[
           Provider.of<Subscription>(context).isSubscribed ||
                   Provider.of<Credentials>(context).items.length < 5

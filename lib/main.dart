@@ -40,7 +40,13 @@ class CredivaultApp extends StatelessWidget {
         theme: ThemeData(
             primaryColor: Colors.teal[700],
             accentColor: Colors.indigo[900],
-            brightness: Brightness.dark),
+            brightness: Brightness.dark,
+            fontFamily: "Jura",
+            textTheme: TextTheme(
+                headline1: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 26,
+                    color: Colors.white))),
         home: CredentialsDatabaseScreen(),
         title: "Credivault",
         routes: {

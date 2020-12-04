@@ -8,7 +8,12 @@ class FastCryptoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Fast Crypto (BME)"),
+        title: FittedBox(
+          child: Text(
+            "Fast Crypto (BME)",
+            style: Theme.of(context).textTheme.headline1,
+          ),
+        ),
       ),
       drawer: MainDrawer(),
       body: SafeArea(child: Crypto()),

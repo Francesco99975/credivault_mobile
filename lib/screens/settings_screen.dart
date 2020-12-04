@@ -17,7 +17,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final _remasterController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings"),
+        title: FittedBox(
+            child: Text(
+          "Settings",
+          style: Theme.of(context).textTheme.headline1,
+        )),
         centerTitle: true,
       ),
       body: Container(
@@ -142,7 +146,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 Navigator.of(context).pop();
                               },
                               child: !_isLoading
-                                  ? const Text("SET MASTER PASSWORD")
+                                  ? Text(
+                                      "SET MASTER PASSWORD",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    )
                                   : CircularProgressIndicator(),
                               color: Theme.of(context).accentColor,
                               textColor: Colors.amber,

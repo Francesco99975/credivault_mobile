@@ -17,7 +17,13 @@ class MainDrawer extends StatelessWidget {
       child: Column(
         children: <Widget>[
           AppBar(
-            title: const Text("Credivault"),
+            title: Text(
+              "Credivault",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline1
+                  .copyWith(color: Colors.amber),
+            ),
             automaticallyImplyLeading: false,
           ),
           _buildRoute(context, "Credentials Database", Icons.storage, "/"),

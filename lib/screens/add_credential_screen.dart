@@ -17,8 +17,12 @@ class AddCredentialScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(
-              args['editMode'] ? "Update Credential" : "Add a new Credential"),
+          title: FittedBox(
+            child: Text(
+              args['editMode'] ? "Update Credential" : "Add a new Credential",
+              style: Theme.of(context).textTheme.headline1,
+            ),
+          ),
           centerTitle: true,
           actions: <Widget>[
             IconButton(
@@ -295,8 +299,13 @@ class _AddCredentialFormState extends State<AddCredentialForm> {
                       label: _isLoading
                           ? CircularProgressIndicator()
                           : widget.args['editMode']
-                              ? const Text("UPDATE CREDENTIAL")
-                              : const Text("STORE CREDENTIAL"))
+                              ? Text(
+                                  "UPDATE CREDENTIAL",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                )
+                              : Text("STORE CREDENTIAL",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)))
                 ],
               ),
             ),
