@@ -1,4 +1,5 @@
 import 'package:credivault_mobile/providers/subscription.dart';
+import 'package:credivault_mobile/screens/rsa_loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:draggable_flutter_list/draggable_flutter_list.dart';
@@ -82,85 +83,68 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: FittedBox(
-            child: Text(
-          "Credentials",
-          style: Theme.of(context).textTheme.headline1,
-        )),
-        actions: <Widget>[
-          Provider.of<Subscription>(context).isSubscribed ||
-                  Provider.of<Credentials>(context).items.length < 5
-              ? IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () => Navigator.of(context).pushNamed(
-                      AddCredentialScreen.ROUTE_NAME,
-                      arguments: {'editMode': false}),
-                )
-              : FlatButton(
-                  child: const Text("Premium Upgrade"),
-                  onPressed: () async => await _showSubscriptionModal(),
+    return FutureBuilder(
+        future: _future,
+        builder: (context, snapshot) => snapshot.connectionState ==
+                ConnectionState.waiting
+            ? RSALoadingScreen()
+            : Scaffold(
+                appBar: AppBar(
+                  title: FittedBox(
+                      child: Text(
+                    "Credentials",
+                    style: Theme.of(context).textTheme.headline1,
+                  )),
+                  actions: <Widget>[
+                    Provider.of<Subscription>(context).isSubscribed ||
+                            Provider.of<Credentials>(context).items.length < 5
+                        ? IconButton(
+                            icon: Icon(Icons.add),
+                            onPressed: () => Navigator.of(context).pushNamed(
+                                AddCredentialScreen.ROUTE_NAME,
+                                arguments: {'editMode': false}),
+                          )
+                        : FlatButton(
+                            child: const Text("Premium Upgrade"),
+                            onPressed: () async =>
+                                await _showSubscriptionModal(),
+                          ),
+                    IconButton(
+                      icon: const Icon(Icons.settings),
+                      onPressed: () => Navigator.of(context)
+                          .pushNamed(SettingsScreen.ROUTE_NAME),
+                    ),
+                  ],
                 ),
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () =>
-                Navigator.of(context).pushNamed(SettingsScreen.ROUTE_NAME),
-          ),
-        ],
-      ),
-      drawer: MainDrawer(),
-      body: SafeArea(
-        child: Container(
-          color: Theme.of(context).accentColor,
-          child: FutureBuilder(
-              future: _future,
-              builder: (context, snapshot) => snapshot.connectionState ==
-                      ConnectionState.waiting
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        LinearProgressIndicator(
-                          backgroundColor: Colors.amber,
+                drawer: MainDrawer(),
+                body: SafeArea(
+                  child: Container(
+                      color: Theme.of(context).accentColor,
+                      child: Consumer<Credentials>(
+                        child: Center(
+                          child: const Text(
+                            "Press [+] to add a credential",
+                            style: TextStyle(fontSize: 18),
+                          ),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        const Text("Generating Secure RSA Keys...",
-                            textAlign: TextAlign.center),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        const Text("This may take a minute...",
-                            textAlign: TextAlign.center)
-                      ],
-                    )
-                  : Consumer<Credentials>(
-                      child: Center(
-                        child: const Text(
-                          "Press [+] to add a credential",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ),
-                      builder: (context, credentials, child) =>
-                          credentials.size() < 1
-                              ? child
-                              : DragAndDropList(
-                                  credentials.size(),
-                                  itemBuilder: (_, index) =>
-                                      ChangeNotifierProvider.value(
-                                    value: credentials.items[index],
-                                    child: CredentialItem(),
-                                  ),
-                                  dragElevation: 8.0,
-                                  canBeDraggedTo: (oldIndex, newIndex) => true,
-                                  onDragFinish: (oldIndex, newIndex) =>
-                                      credentials.rearrange(oldIndex, newIndex),
+                        builder: (context, credentials, child) => credentials
+                                    .size() <
+                                1
+                            ? child
+                            : DragAndDropList(
+                                credentials.size(),
+                                itemBuilder: (_, index) =>
+                                    ChangeNotifierProvider.value(
+                                  value: credentials.items[index],
+                                  child: CredentialItem(),
                                 ),
-                    )),
-        ),
-      ),
-    );
+                                dragElevation: 8.0,
+                                canBeDraggedTo: (oldIndex, newIndex) => true,
+                                onDragFinish: (oldIndex, newIndex) =>
+                                    credentials.rearrange(oldIndex, newIndex),
+                              ),
+                      )),
+                ),
+              ));
   }
 }

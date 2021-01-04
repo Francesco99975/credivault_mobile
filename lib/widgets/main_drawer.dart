@@ -26,7 +26,7 @@ class MainDrawer extends StatelessWidget {
             ),
             automaticallyImplyLeading: false,
           ),
-          _buildRoute(context, "Credentials Database", Icons.storage, "/"),
+          _buildRoute(context, "Credentials", Icons.storage, "/"),
           _buildRoute(context, "Fast Crypto", Icons.enhanced_encryption,
               FastCryptoScreen.ROUTE_NAME),
         ],
