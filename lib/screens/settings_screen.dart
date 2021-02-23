@@ -37,9 +37,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     value: settings.authMode,
                     onChanged: Provider.of<Biometrics>(context, listen: false)
                             .canUseBiometrics
-                        ? (_) async =>
-                            await Provider.of<Settings>(context, listen: false)
-                                .toggleAuthMode()
+                        ? (_) async {
+                            final isAuth = await Provider.of<Biometrics>(
+                                    context,
+                                    listen: false)
+                                .fingerprintAuth();
+                            if (isAuth) {
+                              await Provider.of<Settings>(context,
+                                      listen: false)
+                                  .toggleAuthMode();
+                            }
+                          }
                         : null),
                 SizedBox(
                   height: 10,
