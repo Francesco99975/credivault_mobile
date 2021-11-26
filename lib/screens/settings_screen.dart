@@ -85,7 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             SizedBox(
                               height: 10,
                             ),
-                            RaisedButton(
+                            ElevatedButton(
                               onPressed: () async {
                                 setState(() {
                                   _isLoading = !_isLoading;
@@ -106,7 +106,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         content: const Text(
                                             "Password could not be set"),
                                         actions: <Widget>[
-                                          FlatButton(
+                                          TextButton(
                                             child: const Text("Dismiss"),
                                             onPressed: () =>
                                                 Navigator.of(context).pop(),
@@ -116,7 +116,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     );
                                   }
                                 } else {
-                                  print("Thhere");
                                   final currentMasterPassword =
                                       await Provider.of<Settings>(context,
                                               listen: false)
@@ -138,7 +137,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         content: const Text(
                                             "Password could not be set"),
                                         actions: <Widget>[
-                                          FlatButton(
+                                          TextButton(
                                             child: const Text("Dismiss"),
                                             onPressed: () =>
                                                 Navigator.of(context).pop(),
@@ -157,11 +156,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ? Text(
                                       "SET MASTER PASSWORD",
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.amber),
                                     )
                                   : CircularProgressIndicator(),
-                              color: Theme.of(context).accentColor,
-                              textColor: Colors.amber,
+                              style: ElevatedButton.styleFrom(
+                                  primary:
+                                      Theme.of(context).colorScheme.secondary),
                             )
                           ],
                         ),

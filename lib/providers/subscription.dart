@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
@@ -26,12 +25,9 @@ class Subscription with ChangeNotifier {
   }
 
   Future<void> buySubscription() async {
-    PurchaseParam purchaseParam = PurchaseParam(
-        productDetails: products[0],
-        applicationUserName: null,
-        sandboxTesting: true);
-    await InAppPurchaseConnection.instance
-        .buyNonConsumable(purchaseParam: purchaseParam);
+    PurchaseParam purchaseParam =
+        PurchaseParam(productDetails: products[0], applicationUserName: null);
+    await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
   }
 
   Future<void> _handlePurchaseUpdates(
@@ -43,7 +39,8 @@ class Subscription with ChangeNotifier {
         isPending = false;
         if (purchaseDetails.status == PurchaseStatus.error) {
           print(purchaseDetails.error);
-        } else if (purchaseDetails.status == PurchaseStatus.purchased) {
+        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+            purchaseDetails.status == PurchaseStatus.restored) {
           bool valid = _verifyPurchase(purchaseDetails);
           if (valid) {
             _deliverPurchase(purchaseDetails);
@@ -53,24 +50,21 @@ class Subscription with ChangeNotifier {
           }
         }
         if (purchaseDetails.pendingCompletePurchase) {
-          await InAppPurchaseConnection.instance
-              .completePurchase(purchaseDetails);
+          await InAppPurchase.instance.completePurchase(purchaseDetails);
         }
       }
     });
   }
 
   Future<void> loadSubscription() async {
-    available = await InAppPurchaseConnection.instance.isAvailable();
+    available = await InAppPurchase.instance.isAvailable();
     if (available) {
-      final Stream purchaseUpdates =
-          InAppPurchaseConnection.instance.purchaseUpdatedStream;
+      final Stream purchaseUpdates = InAppPurchase.instance.purchaseStream;
       _subscription = purchaseUpdates.listen((purchases) {
         _handlePurchaseUpdates(purchases);
       }, onDone: () => _subscription.cancel());
 
-      final ProductDetailsResponse response = await InAppPurchaseConnection
-          .instance
+      final ProductDetailsResponse response = await InAppPurchase.instance
           .queryProductDetails(_kProductIds.toSet());
 
       if (response.notFoundIDs.isNotEmpty) {
@@ -80,24 +74,24 @@ class Subscription with ChangeNotifier {
       }
 
       products = response.productDetails;
-      print(products);
-      print(products[0].description);
+      // print(products);
+      // print(products[0].description);
 
-      final QueryPurchaseDetailsResponse responsePast =
-          await InAppPurchaseConnection.instance.queryPastPurchases();
-      if (responsePast.error != null) {
-        available = false;
-        print("Past Purchase error");
-        notifyListeners();
-      }
-      for (PurchaseDetails purchase in responsePast.pastPurchases) {
-        if (_verifyPurchase(purchase)) {
-          _deliverPurchase(purchase);
-          if (Platform.isIOS) {
-            InAppPurchaseConnection.instance.completePurchase(purchase);
-          }
-        }
-      }
+      // final QueryPurchaseDetailsResponse responsePast =
+      //     await InAppPurchase.instance.queryPastPurchases();
+      // if (responsePast.error != null) {
+      //   available = false;
+      //   print("Past Purchase error");
+      //   notifyListeners();
+      // }
+      // for (PurchaseDetails purchase in responsePast.pastPurchases) {
+      //   if (_verifyPurchase(purchase)) {
+      //     _deliverPurchase(purchase);
+      //     if (Platform.isIOS) {
+      //       InAppPurchase.instance.completePurchase(purchase);
+      //     }
+      //   }
+      // }
     }
   }
 }

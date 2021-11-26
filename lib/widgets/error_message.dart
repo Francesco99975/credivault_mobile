@@ -16,9 +16,11 @@ class ErrorMessage extends StatelessWidget {
         textAlign: TextAlign.center,
       ),
       actions: <Widget>[
-        FlatButton(
-          child: Text("Dismiss"),
-          textColor: Theme.of(context).errorColor,
+        TextButton(
+          child: Text(
+            "Dismiss",
+            style: TextStyle(color: Theme.of(context).errorColor),
+          ),
           onPressed: () => Navigator.of(context).pop(),
         )
       ],

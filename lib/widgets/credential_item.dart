@@ -30,11 +30,11 @@ class CredentialItem extends StatelessWidget {
             title: const Text("Are you sure?"),
             content: const Text("Do you want to delete this credential ?"),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: const Text("No"),
                 onPressed: () => Navigator.of(context).pop(false),
               ),
-              FlatButton(
+              TextButton(
                 child: const Text("Yes"),
                 onPressed: () => Navigator.of(context).pop(true),
               )

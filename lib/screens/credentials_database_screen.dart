@@ -53,7 +53,7 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
           content: Text(
               "With a montly subscription of $price, you can store and retreive an almost unlimited number of credentials!"),
           actions: <Widget>[
-            FlatButton.icon(
+            TextButton.icon(
                 onPressed: () async {
                   await sub.buySubscription();
                   Navigator.of(context).pop();
@@ -72,7 +72,7 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
           content:
               Text("Unfortunately Premium is not available at this moment..."),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: const Text("Dismiss"))
           ],
@@ -104,7 +104,7 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
                                 AddCredentialScreen.ROUTE_NAME,
                                 arguments: {'editMode': false}),
                           )
-                        : FlatButton(
+                        : TextButton(
                             child: const Text("Premium Upgrade"),
                             onPressed: () async =>
                                 await _showSubscriptionModal(),
@@ -119,7 +119,7 @@ class _CredentialsDatabaseScreenState extends State<CredentialsDatabaseScreen> {
                 drawer: MainDrawer(),
                 body: SafeArea(
                   child: Container(
-                      color: Theme.of(context).accentColor,
+                      color: Theme.of(context).colorScheme.secondary,
                       child: Consumer<Credentials>(
                         child: Center(
                           child: const Text(

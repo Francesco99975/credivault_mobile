@@ -1,6 +1,7 @@
 import 'package:credivault_mobile/providers/subscription.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:provider/provider.dart';
 import './providers/biometrics_provider.dart';
 import './providers/rsa_provider.dart';
@@ -13,7 +14,9 @@ import './screens/credentials_database_screen.dart';
 import './screens/fast_crypto_screen.dart';
 
 void main() {
-  InAppPurchaseConnection.enablePendingPurchases();
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+  }
   runApp(CredivaultApp());
 }
 
@@ -39,14 +42,14 @@ class CredivaultApp extends StatelessWidget {
       builder: (_, __) => MaterialApp(
         theme: ThemeData(
             primaryColor: Colors.teal[700],
-            accentColor: Colors.indigo[900],
-            brightness: Brightness.dark,
             fontFamily: "Jura",
             textTheme: TextTheme(
                 headline1: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 26,
-                    color: Colors.white))),
+                    color: Colors.white)),
+            colorScheme: ColorScheme.fromSwatch()
+                .copyWith(secondary: Colors.indigo[900])),
         home: CredentialsDatabaseScreen(),
         title: "Credivault",
         routes: {

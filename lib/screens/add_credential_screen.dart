@@ -37,7 +37,7 @@ class AddCredentialScreen extends StatelessWidget {
         body: Stack(
           children: <Widget>[
             Container(
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
             ),
             Container(
               margin: const EdgeInsets.all(18.0),
@@ -290,22 +290,28 @@ class _AddCredentialFormState extends State<AddCredentialForm> {
                   SizedBox(
                     height: 20.0,
                   ),
-                  RaisedButton.icon(
+                  ElevatedButton.icon(
                       onPressed: _isLoading ? () {} : _saveForm,
-                      elevation: 3.0,
                       icon: Icon(Icons.lock),
-                      color: Colors.amber,
-                      textColor: Theme.of(context).accentColor,
+                      style: ElevatedButton.styleFrom(
+                          elevation: 3.0, primary: Colors.amber),
                       label: _isLoading
                           ? CircularProgressIndicator()
                           : widget.args['editMode']
                               ? Text(
                                   "UPDATE CREDENTIAL",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
                                 )
                               : Text("STORE CREDENTIAL",
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)))
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary)))
                 ],
               ),
             ),

@@ -19,13 +19,31 @@ class Biometrics with ChangeNotifier {
     }
   }
 
+  Future<bool> _authenticateIsAvailable() async {
+    final isAvailable = await localAuth.canCheckBiometrics;
+    final isDeviceSupported = await localAuth.isDeviceSupported();
+    print(isAvailable);
+    print(isDeviceSupported);
+    return isAvailable && isDeviceSupported;
+  }
+
   bool get canUseBiometrics {
     return _biomtericsOn;
   }
 
   Future<bool> fingerprintAuth() async {
-    return await localAuth.authenticateWithBiometrics(
-        localizedReason: "Unlock your credentials", useErrorDialogs: true);
+    try {
+      if (await _authenticateIsAvailable()) {
+        return await localAuth.authenticate(
+            localizedReason: "Unlock your credentials",
+            useErrorDialogs: true,
+            biometricOnly: true);
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
   }
 
   void cancelAuthentication() {

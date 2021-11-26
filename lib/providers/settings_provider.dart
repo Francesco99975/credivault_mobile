@@ -16,7 +16,7 @@ class Settings with ChangeNotifier {
   }
 
   Future<String> get masterPassword async {
-    final res = await http.post("$_url/decrypt",
+    final res = await http.post(Uri.parse("$_url/decrypt"),
         body: json.encode({'data': _encryptedMasterPassword}),
         headers: {HttpHeaders.contentTypeHeader: "application/json"});
     final extractedData = json.decode(res.body);
@@ -25,7 +25,7 @@ class Settings with ChangeNotifier {
   }
 
   Future<void> setMasterPassword(String password) async {
-    final res = await http.post("$_url/encrypt",
+    final res = await http.post(Uri.parse("$_url/encrypt"),
         body: json.encode({'data': password}),
         headers: {HttpHeaders.contentTypeHeader: "application/json"});
     final extractedData = json.decode(res.body);

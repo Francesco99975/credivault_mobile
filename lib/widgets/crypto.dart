@@ -19,7 +19,7 @@ class _CryptoState extends State<Crypto> {
     setState(() {
       _isLoading = !_isLoading;
     });
-    final res = await http.post("$_url/encrypt",
+    final res = await http.post(Uri.parse("$_url/encrypt"),
         body: json.encode({'data': message}),
         headers: {HttpHeaders.contentTypeHeader: "application/json"});
     final extractedData = json.decode(res.body);
@@ -45,7 +45,7 @@ class _CryptoState extends State<Crypto> {
     setState(() {
       _isLoading = !_isLoading;
     });
-    final res = await http.post("$_url/decrypt",
+    final res = await http.post(Uri.parse("$_url/decrypt"),
         body: json.encode({'data': message}),
         headers: {HttpHeaders.contentTypeHeader: "application/json"});
 
@@ -71,7 +71,7 @@ class _CryptoState extends State<Crypto> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).accentColor,
+      color: Theme.of(context).colorScheme.secondary,
       child: Center(
         child: Container(
           height: 320,
@@ -103,13 +103,15 @@ class _CryptoState extends State<Crypto> {
                     const SizedBox(
                       height: 10.0,
                     ),
-                    RaisedButton(
-                      color: Theme.of(context).accentColor,
-                      textColor: Colors.amber,
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: Theme.of(context).colorScheme.secondary),
                       child: !_isLoading
                           ? Text(
                               _isEncrypt ? "Encrypt" : "Decrypt",
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.amber),
                             )
                           : CircularProgressIndicator(
                               backgroundColor: Colors.amber,
@@ -133,7 +135,7 @@ class _CryptoState extends State<Crypto> {
                       height: 10.0,
                     ),
                     if (!_isLoading)
-                      FlatButton.icon(
+                      TextButton.icon(
                           onPressed: () {
                             setState(() {
                               _isEncrypt = !_isEncrypt;

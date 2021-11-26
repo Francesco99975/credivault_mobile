@@ -53,7 +53,7 @@ class _EditCredentialsState extends State<EditCredentials> {
                   controller: _controller,
                 ),
                 actions: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: Text("Submit"),
                     onPressed: () async {
                       Navigator.of(context).pop(_controller.text);

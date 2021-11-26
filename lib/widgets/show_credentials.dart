@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:flushbar/flushbar.dart';
 import '../providers/biometrics_provider.dart';
 import '../providers/rsa_provider.dart';
 import '../providers/settings_provider.dart';
@@ -45,7 +44,7 @@ class _ShowCredentialsState extends State<ShowCredentials> {
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(Icons.visibility),
-      color: Theme.of(context).accentColor,
+      color: Theme.of(context).colorScheme.secondary,
       onPressed: () async {
         if (Provider.of<Settings>(context, listen: false).authMode) {
           final res = await Provider.of<Biometrics>(context, listen: false)
@@ -67,7 +66,7 @@ class _ShowCredentialsState extends State<ShowCredentials> {
                 controller: _controller,
               ),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                   child: Text("Submit"),
                   onPressed: () async {
                     Navigator.of(context).pop(_controller.text);
@@ -104,7 +103,7 @@ class _ShowCredentialsState extends State<ShowCredentials> {
                   "Stored Credentials for ${widget._credential.owner}'s ${widget._credential.service}",
                   textAlign: TextAlign.center,
                 ),
-                backgroundColor: Theme.of(context).accentColor,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
                 content: Container(
                   height: 200,
                   width: 600,
@@ -130,15 +129,23 @@ class _ShowCredentialsState extends State<ShowCredentials> {
                             icon: Icon(
                               Icons.content_copy,
                             ),
-                            color: Theme.of(context).accentColor,
+                            color: Theme.of(context).colorScheme.secondary,
                             onPressed: () async {
                               await Clipboard.setData(
                                   ClipboardData(text: values[index]));
-                              Flushbar(
-                                title: "Operation Successfull",
-                                message: "Copied to Clipboard!",
-                                duration: Duration(seconds: 2),
-                              )..show(context);
+
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                      duration: const Duration(seconds: 3),
+                                      elevation: 5,
+                                      behavior: SnackBarBehavior.floating,
+                                      content: Text(
+                                        "Copied to Clipboard!",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1
+                                            .copyWith(color: Colors.white),
+                                      )));
                             },
                           ),
                         ),
@@ -147,7 +154,7 @@ class _ShowCredentialsState extends State<ShowCredentials> {
                   ),
                 ),
                 actions: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: const Text("Close"),
                     onPressed: () {
                       keys = null;

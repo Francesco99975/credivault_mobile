@@ -7,7 +7,7 @@ class RSALoadingScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
